@@ -1,5 +1,7 @@
 #include <iostream>
 
+//연습 
+
 using namespace std;
 
 bool** isfriends;

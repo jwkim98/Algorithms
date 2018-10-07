@@ -114,7 +114,7 @@ int fill(gameBoard* board, int height, int width, int depth){
         board = new gameBoard(height,width);
         isFirst=true;
     }
-    //cout<<"count: "<<count<<endl;
+  //  cout<<"count: "<<count<<endl;
     //* *
     //* 
 
@@ -131,92 +131,74 @@ int fill(gameBoard* board, int height, int width, int depth){
                 break;
         }
     }
-    for(int i=0; i<height; i++){
-        for(int j=0; j<width; j++){
-            if(baseBoard[i][j]==true && baseBoard[i+1][j]==true && baseBoard[i][j+1]==true)
-                if(board->board[i][j]==false && board->board[i+1][j]==false && board->board[i][j+1]==false){
+    if(startX!=-1 && startY!=-1){
 
-                    board->board[i][j]=true;
-                    board->board[i+1][j]=true;
-                    board->board[i][j+1]=true;
+        if(baseBoard[startX][startY]==true && baseBoard[startX+1][startY]==true && baseBoard[startX][startY+1]==true)
+            if(board->board[startX][startY]==false && board->board[startX+1][startY]==false && board->board[startX][startY+1]==false){
 
-                    fill(board, height, width,depth+1);
+                board->board[startX][startY]=true;
+                board->board[startX+1][startY]=true;
+                board->board[startX][startY+1]=true;
 
-                    board->board[i][j]=false;
-                    board->board[i+1][j]=false;
-                    board->board[i][j+1]=false;
+                fill(board, height, width,depth+1);
 
-                    isLast=false;
-                }
-        }
-    }
+                board->board[startX][startY]=false;
+                board->board[startX+1][startY]=false;
+                board->board[startX][startY+1]=false;
 
-    //* *
-    //  *
-    for(int i=0; i<height; i++){
-        for(int j=0; j<width; j++){
-            if(baseBoard[i][j]==true && baseBoard[i][j+1]==true && baseBoard[i+1][j+1]==true)
-                if(board->board[i][j]==false && board->board[i][j+1]==false && board->board[i+1][j+1]==false){
+                isLast=false;
+            }
 
-                    board->board[i][j]=true;
-                    board->board[i][j+1]=true;
-                    board->board[i+1][j+1]=true;
+        if(baseBoard[startX][startY]==true && baseBoard[startX+1][startY]==true && baseBoard[startX+1][startY+1]==true)
+            if(board->board[startX][startY]==false && board->board[startX+1][startY]==false && board->board[startX+1][startY+1]==false){
 
-                    fill(board, height, width,depth+1);
+                board->board[startX][startY]=true;
+                board->board[startX+1][startY]=true;
+                board->board[startX+1][startY+1]=true;
 
-                    board->board[i][j]=false;
-                    board->board[i][j+1]=false;
-                    board->board[i+1][j+1]=false;
+                fill(board, height, width,depth+1);
 
-                    isLast=false;
-                }
-        }
-    }
+                board->board[startX][startY]=false;
+                board->board[startX+1][startY]=false;
+                board->board[startX+1][startY+1]=false;
 
-    //* 
-    //* *
-    for(int i=0; i<height; i++){
-        for(int j=0; j<width; j++){
-            if(baseBoard[i][j]==true && baseBoard[i+1][j]==true && baseBoard[i+1][j+1]==true)
-                if(board->board[i][j]==false && board->board[i+1][j]==false && board->board[i+1][j+1]==false){
+                isLast=false;
+            }
 
-                    board->board[i][j]=true;
-                    board->board[i+1][j]=true;
-                    board->board[i+1][j+1]=true;
+        if(baseBoard[startX][startY]==true && baseBoard[startX+1][startY+1]==true && baseBoard[startX][startY+1]==true)
+            if(board->board[startX][startY]==false && board->board[startX+1][startY+1]==false && board->board[startX][startY+1]==false){
 
-                    fill(board, height, width,depth+1);
+                board->board[startX][startY]=true;
+                board->board[startX+1][startY+1]=true;
+                board->board[startX][startY+1]=true;
 
-                    board->board[i][j]=false;
-                    board->board[i+1][j]=false;
-                    board->board[i+1][j+1]=false;
+                fill(board, height, width,depth+1);
 
-                    isLast=false;
-                }
-        }
-    }
+                board->board[startX][startY]=false;
+                board->board[startX+1][startY+1]=false;
+                board->board[startX][startY+1]=false;
 
-    //  *
-    //* *
-    for(int i=0; i<height; i++){
-        for(int j=0; j<width; j++){
-            if(baseBoard[i+1][j+1]==true && baseBoard[i+1][j]==true && baseBoard[i][j+1]==true)
-                if(board->board[i+1][j+1]==false && board->board[i+1][j]==false && board->board[i][j+1]==false){
+                isLast=false;
+            }
 
-                    board->board[i+1][j+1]=true;
-                    board->board[i+1][j]=true;
-                    board->board[i][j+1]=true;
+        if(startY>0)
+            if(baseBoard[startX][startY]==true && baseBoard[startX+1][startY]==true && baseBoard[startX+1][startY-1]==true)
+                if(board->board[startX][startY]==false && board->board[startX+1][startY]==false && board->board[startX+1][startY-1]==false){
+
+                    board->board[startX][startY]=true;
+                    board->board[startX+1][startY]=true;
+                    board->board[startX+1][startY-1]=true;
 
                     fill(board, height, width,depth+1);
 
-                    board->board[i+1][j+1]=false;
-                    board->board[i+1][j]=false;
-                    board->board[i][j+1]=false;
+                    board->board[startX][startY]=false;
+                    board->board[startX+1][startY]=false;
+                    board->board[startX+1][startY-1]=false;
 
                     isLast=false;
                 }
-        }
-    }
 
+    }
     bool equivalent=true;
     if(isLast=true && depth*3== numWhite){
         cout<<"\ngraph"<<endl;

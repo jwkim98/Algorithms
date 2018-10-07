@@ -1,6 +1,4 @@
 #include<iostream>
-#include<vector>
-#include<stdio.h>
 
 using namespace std;
 
@@ -206,16 +204,16 @@ int fill(gameBoard* board, int height, int width, int depth){
         {
             for(int j=0; j<width; j++){
                 if(board->board[i][j]==true)
-                    printf(". ");
+                    cout<<". ";
                 else
-                    printf("# ");
+                    cout<<"# ";
                 if(board->board[i][j] != baseBoard[i][j])
                 {
                     equivalent = false;
                     
                 }
             }
-            printf("\n");
+            cout<<"\n";
         }
     }
 

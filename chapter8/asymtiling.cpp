@@ -64,6 +64,43 @@ int main(){
 
 }
 
+int newAsymgiling(int pos){
+    if(pos==colSize) // base cases
+        return 1;
+    if(pos+1 == colSize) // only one space left
+        return 1;
+    if(cache[pos] > 0) // if the case has been analyzed before
+        return cache[pos];
+
+    for(int i=0; i<rowSize; i++)
+        tileboard[i][pos] = true;
+
+    int caseA = tiling(pos+1);
+    for(int i=0; i<rowSize; i++)
+        tileboard[i][pos] = false;
+
+    for(int i=0;i<rowSize;i++){
+        tileboard[i][pos] = true;
+        tileboard[i][pos+1] = true;
+    }
+
+    int caseB = tiling(pos+2);
+
+    for(int i=0;i<rowSize;i++){
+        tileboard[i][pos] = false;
+        tileboard[i][pos+1] = false;
+    }
+    
+    cache[pos] = (caseA + caseB)%1000000007;
+
+    return cache[pos];
+
+}
+
+
+
+
+
 int asymtiling(bool first){
     int startRow = -1;
     int startCol = -1;

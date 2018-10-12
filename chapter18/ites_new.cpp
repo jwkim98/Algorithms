@@ -34,19 +34,22 @@ int run(const int N, const int K){
     std::cout<<"before_push: "<<std::endl;
     signals->push(1983);
 
+    if(sum == K)
+        count++;
+
     while(*head_index != *tail_index || *head_index < N){
         std::cout<<"sum: "<<*sum<<" tail_index: "<<*tail_index<<" head_index: "<<*head_index<<std::endl;
-        if(*sum == K)
-            count+=1;
-        
         bool ok = true;
         while(*sum<K && ok && *tail_index < N){
             ok = increment_tail(tail_index, signals, N, sum);
+            if(*sum == K)
+                count+=1;
         }
         while(*sum >= K && ok && *head_index < N){
             ok = increment_head(head_index, tail_index, signals,N, sum);
-            if(*sum == K)
-                break;
+            if(*sum == K){
+                count +=1;
+            }
         }
 
         if(*sum < K && *tail_index > N-1)

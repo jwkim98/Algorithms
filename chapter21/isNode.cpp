@@ -1,24 +1,22 @@
 #include <iostream>
 #include <vector>
-#include <Algorithm>
+#include <algorithm>
 
 class Node{
     public: 
         int height;
-        int depth;
         int val;
         Node* parent;
         Node* leftChild;
         Node* rightChild;
         Node(int val, Node* parent){
             this->val = val;
-            this->depth = depth;
             this->parent = parent;
         }
 
         ~Node(){
-            delete leftchild;
-            delete rightchild;
+            delete leftChild;
+            delete rightChild;
         }
 };
 
@@ -27,7 +25,7 @@ class Person{
         bool isChecked;
         int ramenNum;
         int solveNum;
-        person(int ramenNum, int solveNum){
+        Person(int ramenNum, int solveNum){
             isChecked = false;
             this->ramenNum = ramenNum;
             this->solveNum = solveNum;
@@ -35,66 +33,66 @@ class Person{
 };
 
 
-Node* ConstructTree(Node* parent, std::vector<Person*> *list, const int start, const int end);
+Node* ConstructTreeRamen(Node* parent, std::vector<Person*> *list, const int start, const int end);
 
-void checkTree(Node* node); 
+int checkTree(Node* node); 
+
+bool checkFunc(Person* person1, Person* person2){
+    return person1->ramenNum < person2->ramenNum;
+}
 
 int main(){
     int inputNum;
     std::cin>>inputNum;
 
-    std::vector<Person> personList;
+    std::vector<Person*> *personList = new std::vector<Person*>;
 
-    ramenList.reserve(inputNum);
-    solveList.reserve(inputNum);
+    personList->reserve(inputNum);
 
     for(int i=0; i<inputNum; i++){
         int solveNum, ramenNum;
         std::cin>>solveNum>>ramenNum;
-        ramenList.push_back(new Person(ramen, solve));
+        personList->push_back(new Person(ramenNum, solveNum));
     }
 
-    std::sort(ramenList.begin(), ramenList.end());
-    std::sort(solveList.begin(), solveList.end());
-    int ramenStartIndex = ramenList.size()/2;
-    int solveStartIndex = solveList.size()/2;
+    std::sort(personList->begin(), personList->end(), checkFunc);
 
-    Node* root = ConstructTree(NULL, personList, 0, personLit.size());
+    Node* root = ConstructTreeRamen(NULL, personList, 0, personList->size() - 1);
     checkTree(root);
 
-    std::vector<Person>::iterator itr;
-    for(itr = personList.begin(); itr != personList.end(); itr++){
+    std::vector<Person*>::iterator itr;
+    for(itr = personList->begin(); itr != personList->end(); itr++){
         delete *itr;
     }
-    delete itr;
+    delete personList;
     delete root;
 
 }
 
-Node* ConstructTree(Node* parent, std::vector<Person*> *list, const int start, const int end){ // constructs binary search tree
-    index = (start + end)/2;
+Node* ConstructTreeRamen(Node* parent, std::vector<Person*> *list, const int start, const int end){ // constructs binary search tree by ramen number
+    int index = (start + end)/2;
 
     //special case for returning 'end' value
-    if(start+1 == end && (*list)[start] == true && (*list)[end] == false)
+    if(start+1 == end && (*list)[start]->isChecked == true && (*list)[end]->isChecked == false)
         return new Node((*list)[end]->ramenNum, parent);
 
     if((*list)[index]->isChecked == true) // return NULL if index node has already added
         return NULL;
 
-    currentNode = new Node((*list)[index]->ramenNum, parent);
+    Node* currentNode = new Node((*list)[index]->ramenNum, parent);
     (*list)[index]->isChecked = true;
 
     if(start==end){
-            return currentNode;
+        return currentNode;
     }
 
-    currentnode->leftChild = ConstructTree(currentNode , list, start, index);
-    currentnode->rightChild = ConstructTree(currentNode , list, index + 1, end);
+    currentNode->leftChild = ConstructTreeRamen(currentNode , list, start, index);
+    currentNode->rightChild = ConstructTreeRamen(currentNode , list, index + 1, end);
 
     return currentNode;
 }
 
-void checkTree(Node* node){ // inorder transversal of the tree for checking the algorithm
+int checkTree(Node* node){ // inorder transversal of the tree for checking the algorithm
     if(node == NULL)
         return 0;
 
@@ -102,5 +100,9 @@ void checkTree(Node* node){ // inorder transversal of the tree for checking the 
     std::cout<<node->val<<" ";
     int rightHeight = checkTree(node->rightChild);
 
-    return ((leftHeight > rightHeight)? leftHeight, rightHeight) + 1;
+    int height = ((leftHeight > rightHeight)? leftHeight: rightHeight) + 1;
+    node->height = height;
+
+    return height;
 }
+

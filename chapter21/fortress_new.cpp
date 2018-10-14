@@ -40,6 +40,7 @@ class fortress{
                 if(!this->isContainedBy(other->num)) // don't add of it's already included
                     ContainedBy.push_back(other->num);
             }
+            return distance;
         }
 
         //returns if this fortress is contained by parameterized fortress
@@ -124,7 +125,6 @@ int findLongestPath(Node* currentNode){
     std::vector<int> pathLength;
     std::vector<int> heights;
     std::vector<Node*>::iterator childrenItr;
-    int highest = 0;
     for(childrenItr = currentNode->children.begin(); childrenItr != currentNode->children.end(); childrenItr++){
         pathLength.push_back(findLongestPath(*childrenItr));
         heights.push_back(getHeight(*childrenItr));

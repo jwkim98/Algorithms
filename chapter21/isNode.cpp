@@ -12,6 +12,8 @@ class Node{
         Node(int val, Node* parent){
             this->val = val;
             this->parent = parent;
+            leftChild = NULL;
+            rightChild = NULL;
         }
 
         ~Node(){
@@ -58,6 +60,7 @@ int main(){
     std::sort(personList->begin(), personList->end(), checkFunc);
 
     Node* root = ConstructTreeRamen(NULL, personList, 0, personList->size() - 1);
+    std::cout<<"checkTree for Ramen"<<std::endl;
     checkTree(root);
 
     std::vector<Person*>::iterator itr;
@@ -104,5 +107,53 @@ int checkTree(Node* node){ // inorder transversal of the tree for checking the a
     node->height = height;
 
     return height;
+}
+
+Node* SearchFromRamen(Node* currentNode, Person* person){
+    if(currentNode == NULL) // if nothing was found
+       return NULL;
+
+    if(currentNode->ramenNum == person->ramenNum) // if found
+        return currentNode;
+
+    Node* found;
+
+    if(person->ramenNum < currentNode->ramenNum){
+        found = SearchFromRamen(currentNode->left, person);
+    }
+    if(currentNode->ramenNum < person->ramenNum){
+        found = SearchFromRamen(currentNode->right, person);
+    }
+
+    return found;
+}
+
+Node* PlaceToInsert(Node* currentNode,  bool leftOrRight){//left: true, right: false
+
+    if(leftOrRight == true){
+        if(currentNode->rightChild == NULL)
+            return currentNode;
+        return PlaceToInsert(currentNode->rightChild, leftOrRight);
+
+    }else{
+        if(currentNode->leftChild == NULL)
+            return currentNode;
+        return PlaceToInsert(currentNode->leftChild, leftOrRight);
+    }
+}
+
+Node* eliminateFromRamen(Node* root, Person* person){
+    Node* newRoot = SearchFromRamen(root, person); // find the person
+    if(newRoot->parent->ramenNum < newRoot->ramenNum){
+        delete newRoot->parent;
+        newRoot->parent = NULL;
+    }
+
+    if(newRoot->parent->ramenNum > newRoot->ramenNum){ // left child
+        newRoot->parent->leftChild = NULL;
+        Node* place = PlaceToInsert(newRoot, false);
+        place->rightChild = newRoot->parent;
+
+    }
 }
 

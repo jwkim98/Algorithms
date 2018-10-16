@@ -1,24 +1,33 @@
 #include <iostream>
+#include <cstdlib>
+#include <deque>
+#include <vector>
+/*
+   implementation of reversing insertion sort
+   using self-implemented Tree
+*/
 
 class treapNode{
     public:
         int val;
         int priority;
-        Node* leftChild;
-        Node* rightChild;
-        Node(int value):val(value), leftChild(NULL), rightChild(NULL){
-
+        treapNode* leftChild;
+        treapNode* rightChild;
+        treapNode(int value, int priority):val(value), leftChild(NULL), rightChild(NULL){
+            this->priority = priority;
         }
 
         int getSize(){
             int leftSize = 0;
             int rightSize = 0;
-            if(leftChlid != NULL){
+            if(leftChild != NULL){
                 leftSize = leftChild->getSize();
             }
             if(rightChild != NULL){
-                rightsize = rightChild->getSize();
+                rightSize = rightChild->getSize();
             }
+
+            return leftSize + rightSize + 1;
         }
 
         int getHeight(){
@@ -39,19 +48,96 @@ class treapNode{
             //return larger height between two children with 1 added
             return ((leftHeight > rightHeight) ? leftHeight: rightHeight) + 1;
         }
+};
+
+inline int getRandom(){
+    return rand()%50000;
 }
 
+treapNode* search(treapNode* node, int val);
+
+treapNode* insert(treapNode* node, int val); 
+
+treapNode* RightRotate(treapNode* node);
+
+treapNode* LeftRotate(treapNode* node);
+
+treapNode* deleteNode(treapNode* root, int val);
+
+treapNode* searchByIndex(treapNode* root, int index);
+
+void inorderCheck(treapNode * node);
+
+void deleteTree(treapNode *root);
+
+void eval();
+//        std::cout<<"c"<<std::endl;
+
+int main(){
+    int numofExe;
+    std::cin>>numofExe;
+    for(int i=0; i<numofExe; i++)
+        eval();
+
+}
+void eval(){
+
+    int inputNum;
+    std::cin>>inputNum;
+    std::deque<int> result;
+    std::vector<int> inputs;
+
+    treapNode* root = NULL;
+
+    inputs.reserve(inputNum);
+
+    for(int i=0; i<inputNum; i++){
+        root = insert(root, i);
+    }
+
+//    inorderCheck(root);
+//    std::cout<<"\n"<<root->getSize()<<std::endl;
+
+    for(int i=0; i<inputNum; i++){
+        int input;
+        std::cin>>input;
+        inputs.push_back(input);
+    }
+
+    for(int i=0; i<inputNum; i++){
+        int input = inputs.back();
+        inputs.pop_back();
+//        std::cout<<"root Size: "<<root->getSize()<<std::endl;
+        treapNode* found = searchByIndex(root, root->getSize() - input - 1);
+        if(found != NULL){
+            // push the result to the inputs deque
+            result.push_back(found->val);
+            root = deleteNode(root, found->val);
+        }
+    }
+
+    while(result.size() > 0){
+        std::cout<<result.back() + 1<<" ";
+        result.pop_back();
+    }
+
+    deleteTree(root);
+    std::cout<<std::endl;
+}
+
+//Searches typical node with value
+//returns NULL if node wasn't found
 treapNode* search(treapNode* node, int val){
 
     if(node == NULL)
         return NULL;
 
     if(val > node->val){
-        return search(treapNode* node->right, int val);
+        return search(node->rightChild, val);
     }
 
     if(val < node->val){
-        return search(treapNode* node->left, int val);
+        return search(node->leftChild, val);
     }
 
     if(node->val == val)
@@ -60,18 +146,18 @@ treapNode* search(treapNode* node, int val){
 
 treapNode* insert(treapNode* node, int val){ // node: tree to insert, returns treapnode with node inserted
     if(node == NULL)
-        return new treapNode(val);
+        return new treapNode(val, getRandom());
 
     if(val > node->val){
-        node->right = insert(node->right, val);
-        if(node->right->priority > node->priority){
+        node->rightChild = insert(node->rightChild, val);
+        if(node->rightChild->priority > node->priority){
             node = LeftRotate(node);
         }
     }
     else if(val <= node->val){
-        node->left = insert(node->left, val);
+        node->leftChild = insert(node->leftChild, val);
         //if priority is violated, rotate the tree
-        if(node->left->priority > node->priority){
+        if(node->leftChild->priority > node->priority){
             node = RightRotate(node);
         }
     }
@@ -86,7 +172,7 @@ treapNode* RightRotate(treapNode* node){
     treapNode* newRootRight = newRoot->rightChild;
     newRoot->rightChild = node;
     node->leftChild = newRootRight;
-
+    return newRoot;
 }
 
 treapNode* LeftRotate(treapNode* node){
@@ -94,33 +180,40 @@ treapNode* LeftRotate(treapNode* node){
         return node;
     treapNode* newRoot = node->rightChild;
     treapNode* newRootLeft = newRoot->leftChild;
-    newRoot->left = node;
+    newRoot->leftChild = node;
     node->rightChild = newRootLeft;
+    return newRoot;
 }
 
 treapNode* deleteNode(treapNode* root, int val){
-    treapNode* toDelete = search(root, val);
-
-    if(toDelete == NULL)
+    if(root == NULL)
         return root;
 
-    treapNode* left = toDelete->leftChild;
-    treapNode* right = toDelete->rightChild;
+    if(root->val > val){
+        root->leftChild = deleteNode(root->leftChild, val);
+        return root;
+    }
+    if(root->val < val){
+        root->rightChild = deleteNode(root->rightChild, val);
+        return root;
+    }
+
+    //delete root
+
+    treapNode* left = root->leftChild;
+    treapNode* right = root->rightChild;
 
     if(left == NULL && right == NULL){
-        delete toDelete;
-        toDelete = NULL;
-        return root;
+        delete root;
+        return NULL;
     }
     if(left == NULL){
-        delete toDelete;
-        toDelete = right;
-        return root;
+        delete root;
+        return right;
     }
     if(right == NULL){
-        delete toDelete;
-        toDelete = left;
-        return root;
+        delete root;
+        return left;
     }
 
 
@@ -136,20 +229,50 @@ treapNode* deleteNode(treapNode* root, int val){
 }
 
 treapNode* searchByIndex(treapNode* root, int index){
-    if(root = NULL)
+    if(root == NULL){
         return NULL; // no according index
+    }
+    int leftSize = 0;
 
-    if(root->leftChild->getSize() < index){
-        return searchByIndex(root->leftChild, index);
+    if(root->leftChild != NULL){
+        leftSize = root->leftChild->getSize();
     }
 
-    if(root->leftChild->getSize() == index){
+    if(leftSize < index){
+        treapNode *found = searchByIndex(root->rightChild, index - (leftSize + 1));
+        return found;
+    }
+
+    else if(leftSize == index){
         return root; // found!
     }
 
-    if(root->rightChild->getSize() > index){
-        return searchByIndex(root->rightChild, index);
+    else if(index < leftSize){
+        treapNode* found = searchByIndex(root->leftChild, index);
+        return found;
     }
+}
+
+void inorderCheck(treapNode * node){
+    if(node == NULL)
+        return;
+
+    inorderCheck(node->leftChild);
+    std::cout<<node->val<<" ";
+    inorderCheck(node->rightChild);
+
+    return;
+}
+
+void deleteTree(treapNode *root){
+    if(root == NULL)
+        return;
+
+    deleteTree(root->leftChild);
+    deleteTree(root->rightChild);
+    delete root;
+
+    return;
 }
 
 

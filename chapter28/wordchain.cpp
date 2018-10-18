@@ -27,13 +27,13 @@ int main(){
             visited[i][j] = false;
         }
     }
-    
+   
+    //receive number of word inputs
     int numWords;
     std::cin>>numWords;
 
     char* input = new char[11];
     for(int i=0; i<numWords; i++){
-        char* input = new char[11]; // max word length 10
         std::cin>>input; // get string input
 
         char start = toInt(input[0]);

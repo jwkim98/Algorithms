@@ -50,7 +50,7 @@ int main(){
 
  //   std::cout<<"size of stack: "<<order.size()<<std::endl;
 
-    //if unvisited edge exists, no euler path exists
+    //if unvisited edge exists, no Euler path exists
     if(numWords == order.size()){
         //print words in stack in reversed order
         while(order.size() > 0){

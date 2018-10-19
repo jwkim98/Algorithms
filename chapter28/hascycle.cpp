@@ -102,7 +102,7 @@ int findCycle(const int index, std::vector<std::vector<int>> &adj, std::vector<i
             }
         }
 
-        //forward edge if next is found later, and has been visited
+        //forward edge if next is found later then current vertex, and has been visited
         if(visitOrder[next] > visitOrder[index] && visitOrder[next] != INF){
             adj[index][next] = 2;
         }

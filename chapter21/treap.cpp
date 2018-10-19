@@ -144,12 +144,14 @@ treapNode* search(treapNode* node, int val){
         return node;
 }
 
-treapNode* insert(treapNode* node, int val){ // node: tree to insert, returns treapnode with node inserted
+// node: tree to insert, returns treapnode with node inserted
+treapNode* insert(treapNode* node, int val){
     if(node == NULL)
         return new treapNode(val, getRandom());
 
     if(val > node->val){
         node->rightChild = insert(node->rightChild, val);
+        //once inserted, fix the tree to have right proiority order
         if(node->rightChild->priority > node->priority){
             node = LeftRotate(node);
         }
@@ -161,10 +163,14 @@ treapNode* insert(treapNode* node, int val){ // node: tree to insert, returns tr
             node = RightRotate(node);
         }
     }
-
     return node;
 }
 
+//Rotates the tree right 
+/*
+    newRoot->right = oldRoot
+    oldRoot->Left = rightChild of newRoot
+*/
 treapNode* RightRotate(treapNode* node){
     if(node == NULL || node->leftChild == NULL)
         return node;
@@ -175,6 +181,11 @@ treapNode* RightRotate(treapNode* node){
     return newRoot;
 }
 
+//Rotates the tree left
+/*
+   newRoot->Left node
+   oldRoot->Right = leftchild of newRoot
+*/
 treapNode* LeftRotate(treapNode* node){
     if(node == NULL || node->rightChild == NULL)
         return node;
@@ -189,6 +200,7 @@ treapNode* deleteNode(treapNode* root, int val){
     if(root == NULL)
         return root;
 
+    //Search for the value to delete
     if(root->val > val){
         root->leftChild = deleteNode(root->leftChild, val);
         return root;
@@ -263,7 +275,7 @@ void inorderCheck(treapNode * node){
 
     return;
 }
-
+//Deletes whole tree with postorder transversal
 void deleteTree(treapNode *root){
     if(root == NULL)
         return;
